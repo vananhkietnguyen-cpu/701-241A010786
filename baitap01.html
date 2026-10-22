@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phần Lý Thuyết (40 điểm)</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .question-card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid var(--border-color);
+        }
+        .question-title {
+            color: var(--primary);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        pre {
+            background: #1e293b;
+            color: #f8fafc;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 10px 0;
+            font-family: monospace;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        table, th, td {
+            border: 1px solid var(--border-color);
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th { background: #f1f5f9; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo">Dự Án Web 701</a>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Bài 1 (Sản phẩm)</a></li>
+                    <li><a href="baitap02.html">Bài 2 (Đăng ký)</a></li>
+                    <li><a href="baitap03.html">Bài 3 (Countdown)</a></li>
+                    <li><a href="baitap01.html">Trả lời Lý thuyết</a></li>
+                    <li><a href="baitap22.html">Bài tập 22</a></li>
+                    <li><a href="baitap23.html">Bài tập 23</a></li>
+                    <li><a href="about.html">Thông tin Điểm danh</a></li>
+                    <li><a href="contact.html">Liên hệ</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <h2 class="page-title">Trang Trả Lời Chi Tiết Phần Lý Thuyết (40 Điểm)</h2>
+
+        <!-- CÂU 1 -->
+        <div class="question-card">
+            <h3 class="question-title">Câu 1 (10 điểm): Position absolute / relative, Responsive & Hosting</h3>
+            <p><strong>1. Sự khác biệt:</strong></p>
+            <ul>
+                <li><code>position: relative</code>: Dịch chuyển so với vị trí ban đầu của chính nó, không làm mất khoảng trống (flow) ban đầu trên layout.</li>
+                <li><code>position: absolute</code>: Tách khỏi dòng chảy tự nhiên của trang web, định vị dựa vào phần tử cha gần nhất có `position` khác `static`.</li>
+            </ul>
+            <p><strong>2. Ví dụ Responsive (Card sản phẩm có nhãn Badge):</strong></p>
+<pre><code>.card { position: relative; width: 100%; max-width: 300px; }
+.badge { position: absolute; top: 10px; right: 10px; background: red; color: white; }</code></pre>
+            <p><strong>3. Ảnh hưởng khi Deploy lên Hosting:</strong> Nếu không đặt `relative` ở thẻ cha, thẻ con `absolute` sẽ lấy mốc từ góc trang web (`body`), dẫn tới vỡ giao diện trên các thiết bị mobile khác nhau.</p>
+        </div>
+
+        <!-- CÂU 2 -->
+        <div class="question-card">
+            <h3 class="question-title">Câu 2 (10 điểm): Quy trình Đăng ký Domain, Hosting, DNS & Security</h3>
+            <p><strong>1. Quy trình:</strong> Mua tên miền -> Đẩy mã nguồn JavaScript/HTML lên Server Hosting -> Cấu hình bản ghi A Record hoặc CNAME trên DNS để trỏ tên miền về IP/Host.</p>
+            <p><strong>2. Vai trò DNS:</strong> Chuyển đổi tên miền dễ nhớ (vd: `domain.com`) thành địa chỉ IP máy chủ (vd: `192.0.2.1`).</p>
+            <p><strong>3. 2 Công cụ Deploy không cần Server:</strong> GitHub Pages & Netlify (hoặc Vercel).</p>
+            <p><strong>4. Rủi ro bảo mật:</strong> Nếu thiếu SSL/HTTPS sẽ làm lộ thông tin truyền nhận; để lộ API Key client-side trong file `.js` sẽ bị kẻ xấu lợi dụng.</p>
+        </div>
+
+        <!-- CÂU 3 -->
+        <div class="question-card">
+            <h3 class="question-title">Câu 3 (10 điểm): So sánh let, const, var & Debug Chrome DevTools</h3>
+            <table>
+                <tr><th>Đặc tính</th><th>var</th><th>let</th><th>const</th></tr>
+                <tr><td>Scope</td><td>Function Scope</td><td>Block Scope {}</td><td>Block Scope {}</td></tr>
+                <tr><td>Hoisting</td><td>Có (undefined)</td><td>Có (TDZ)</td><td>Có (TDZ)</td></tr>
+                <tr><td>Gán lại</td><td>Có</td><td>Có</td><td>Không</td></tr>
+            </table>
+            <p><strong>Ví dụ lỗi TDZ:</strong></p>
+<pre><code>console.log(a); // undefined
+var a = 5;
+console.log(b); // Uncaught ReferenceError: Cannot access 'b' before initialization
+let b = 10;</code></pre>
+            <p><strong>Debug DevTools:</strong> Nhấn F12 -> Mở tab <em>Console</em> xem lỗi -> Mở tab <em>Sources</em> chọn file JS -> Đặt <em>Breakpoint</em> để theo dõi biến qua từng dòng lệnh trong bảng <em>Scope</em>.</p>
+        </div>
+
+        <!-- CÂU 4 -->
+        <div class="question-card">
+            <h3 class="question-title">Câu 4 (10 điểm): Event Delegation & Tối ưu hiệu suất</h3>
+            <p><strong>Khái niệm:</strong> Lợi dụng cơ chế Event Bubbling để gắn 1 Event Listener duy nhất vào phần tử cha thay vì gắn vào từng phần tử con.</p>
+            <p><strong>Ví dụ với danh sách động:</strong></p>
+<pre><code>document.getElementById('parent-list').addEventListener('click', function(e) {
+    if(e.target && e.target.classList.contains('btn-delete')) {
+        e.target.parentElement.remove();
+    }
+});</code></pre>
+            <p><strong>Lợi ích:</strong> Tiết kiệm RAM bộ nhớ, tối ưu tốc độ render, tự động nhận sự kiện cho cả các phần tử con được thêm mới sau này bằng JS.</p>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2026 Bài thi môn Lập trình Web - Thư mục 701-MSSV</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài 1 - Danh Sách Sản Phẩm</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            justify-content: center;
+        }
+
+        .search-box input {
+            width: 100%;
+            max-width: 400px;
+            padding: 10px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .product-item {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .product-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-item img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+
+        .product-price {
+            color: var(--primary);
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        .no-result {
+            grid-column: 1 / -1;
+            text-align: center;
+            color: var(--danger);
+            font-size: 1.1rem;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo">Dự Án Web 701</a>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Bài 1 (Sản phẩm)</a></li>
+                    <li><a href="baitap02.html">Bài 2 (Đăng ký)</a></li>
+                    <li><a href="baitap03.html">Bài 3 (Countdown)</a></li>
+                    <li><a href="baitap01.html">Trả lời Lý thuyết</a></li>
+                    <li><a href="baitap22.html">Bài tập 22</a></li>
+                    <li><a href="baitap23.html">Bài tập 23</a></li>
+                    <li><a href="about.html">Thông tin Điểm danh</a></li>
+                    <li><a href="contact.html">Liên hệ</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <h2 class="page-title">Bài 1: Danh Sách Sản Phẩm & Tìm Kiếm</h2>
+
+        <div class="card">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Nhập tên sản phẩm để tìm kiếm...">
+            </div>
+
+            <div class="product-grid" id="productGrid">
+                <!-- Danh sách sản phẩm sẽ render bằng JS -->
+            </div>
+        </div>
+
+        <div class="explanation-box">
+            <h4>🧠 Giải thích logic tư duy (Bài 1):</h4>
+            <ul>
+                <li><strong>Phòng chống Injection (XSS):</strong> Khi xử lý chuỗi nhập từ người dùng (`input`), ta sử dụng `.trim()` để loại bỏ khoảng trắng thừa và sử dụng `textContent` khi chèn nội dung vào HTML thay vì dùng `innerHTML` không kiểm soát, tránh việc thực thi các thẻ lệnh độc hại như `<script>`.</li>
+                <li><strong>Tìm kiếm không phân biệt hoa/thường:</strong> Chuẩn hóa cả từ khóa tìm kiếm và tên sản phẩm về chữ thường bằng `.toLowerCase()` trước khi kiểm tra khớp chuỗi `.includes()`.</li>
+                <li><strong>Tối ưu trải nghiệm (UX):</strong> Lắng nghe sự kiện `input` trực tiếp để lọc dữ liệu thời gian thực (real-time). Khi không tìm thấy sản phẩm, hệ thống hiển thị thông báo phản hồi rõ ràng cho người dùng.</li>
+            </ul>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2026 Bài thi môn Lập trình Web - Thư mục 701-MSSV</p>
+    </footer>
+
+    <script src="js/script.js"></script>
+    <script>
+        const products = [
+            { id: 1, name: "Laptop Dell XPS 13", price: "28.990.000đ", image: "https://picsum.photos/200/150?random=1" },
+            { id: 2, name: "Bàn phím cơ Keychron K2", price: "1.850.000đ", image: "https://picsum.photos/200/150?random=2" },
+            { id: 3, name: "Chuột không dây Logitech MX Master 3S", price: "2.490.000đ", image: "https://picsum.photos/200/150?random=3" },
+            { id: 4, name: "Màn hình Dell UltraSharp 27 inch", price: "8.500.000đ", image: "https://picsum.photos/200/150?random=4" },
+            { id: 5, name: "Tai nghe Sony WH-1000XM5", price: "6.990.000đ", image: "https://picsum.photos/200/150?random=5" }
+        ];
+
+        const productGrid = document.getElementById('productGrid');
+        const searchInput = document.getElementById('searchInput');
+
+        function renderProducts(items) {
+            productGrid.innerHTML = '';
+            if (items.length === 0) {
+                productGrid.innerHTML = '<div class="no-result">❌ Không tìm thấy sản phẩm phù hợp!</div>';
+                return;
+            }
+
+            items.forEach(product => {
+                const card = document.createElement('div');
+                card.className = 'product-item';
+                
+                const img = document.createElement('img');
+                img.src = product.image;
+                img.alt = product.name;
+
+                const name = document.createElement('h3');
+                name.style.fontSize = '1.05rem';
+                name.textContent = product.name; // Tránh XSS injection
+
+                const price = document.createElement('div');
+                price.className = 'product-price';
+                price.textContent = product.price;
+
+                card.appendChild(img);
+                card.appendChild(name);
+                card.appendChild(price);
+                productGrid.appendChild(card);
+            });
+        }
+
+        // Lọc sản phẩm
+        searchInput.addEventListener('input', (e) => {
+            const keyword = e.target.value.trim().toLowerCase();
+            const filtered = products.filter(p => p.name.toLowerCase().includes(keyword));
+            renderProducts(filtered);
+        });
+
+        // Chạy lần đầu
+        renderProducts(products);
+    </script>
+</body>
+</html>

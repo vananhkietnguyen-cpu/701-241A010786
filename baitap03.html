@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài 3 - Đồng Hồ Đếm Ngược</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .timer-box {
+            text-align: center;
+            padding: 30px;
+        }
+
+        .timer-display {
+            font-size: 4rem;
+            font-weight: bold;
+            font-family: 'Courier New', Courier, monospace;
+            color: #0f172a;
+            margin: 20px 0;
+            display: inline-block;
+            padding: 10px 30px;
+            border-radius: 12px;
+            background: #f1f5f9;
+        }
+
+        /* Animation khi thời gian dưới 1 phút */
+        .warning {
+            color: var(--danger);
+            animation: pulse 1s infinite alternate;
+            background: #fee2e2;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.08); }
+        }
+
+        .controls button {
+            padding: 10px 25px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 6px;
+            background: var(--primary);
+            color: white;
+            cursor: pointer;
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo">Dự Án Web 701</a>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Bài 1 (Sản phẩm)</a></li>
+                    <li><a href="baitap02.html">Bài 2 (Đăng ký)</a></li>
+                    <li><a href="baitap03.html">Bài 3 (Countdown)</a></li>
+                    <li><a href="baitap01.html">Trả lời Lý thuyết</a></li>
+                    <li><a href="baitap22.html">Bài tập 22</a></li>
+                    <li><a href="baitap23.html">Bài tập 23</a></li>
+                    <li><a href="about.html">Thông tin Điểm danh</a></li>
+                    <li><a href="contact.html">Liên hệ</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <h2 class="page-title">Bài 3: Đồng Hồ Đếm Ngược (Countdown Timer)</h2>
+
+        <div class="card timer-box">
+            <h3>Thời Gian Còn Lại:</h3>
+            <div id="timerDisplay" class="timer-display">10:00</div>
+            <div class="controls">
+                <button id="startBtn">Bắt Đầu</button>
+                <button id="resetBtn" style="background: #64748b;">Reset</button>
+            </div>
+        </div>
+
+        <!-- Modal Alert -->
+        <div id="timeOutModal" class="modal">
+            <div class="modal-content">
+                <h3 style="color: var(--danger);">⏰ Hết Giờ!</h3>
+                <p style="margin-top: 10px;">Thời gian đếm ngược 10 phút đã kết thúc.</p>
+                <button onclick="closeModal()">Đóng</button>
+            </div>
+        </div>
+
+        <div class="explanation-box">
+            <h4>🧠 Giải thích logic tư duy (Bài 3):</h4>
+            <ul>
+                <li><strong>Tránh Memory Leak (Rò rỉ bộ nhớ):</strong> Luôn lưu trữ ID của `setInterval` vào một biến (`timerInterval`). Khi đồng hồ chạy về `00:00` hoặc khi người dùng ấn nút Reset/Chuyển trang, ta bắt buộc phải gọi `clearInterval(timerInterval)` để hủy tiến trình chạy ngầm trong bộ nhớ Browser.</li>
+                <li><strong>Đồng bộ thời gian Server (khi Deploy):</strong> Đồng hồ chạy theo `setInterval` ở phía Client có thể bị sai lệch (lag) do trình duyệt giảm tài nguyên khi chuyển tab. Khi triển khai bài toán thực tế (như làm bài thi trực tuyến), ta nên lưu mốc thời gian kết thúc (`endTime = Date.now() + duration`) hoặc lấy thời gian thực từ Server API thay vì trừ dần từng giây thủ công.</li>
+            </ul>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2026 Bài thi môn Lập trình Web - Thư mục 701-MSSV</p>
+    </footer>
+
+    <script src="js/script.js"></script>
+    <script>
+        let totalSeconds = 10 * 60; // 10 phút
+        let timerInterval = null;
+
+        const display = document.getElementById('timerDisplay');
+        const startBtn = document.getElementById('startBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const modal = document.getElementById('timeOutModal');
+
+        function updateDisplay() {
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = totalSeconds % 60;
+
+            const formattedMins = String(minutes).padStart(2, '0');
+            const formattedSecs = String(seconds).padStart(2, '0');
+
+            display.textContent = `${formattedMins}:${formattedSecs}`;
+
+            // Thêm animation khi còn dưới 1 phút (60 giây)
+            if (totalSeconds < 60 && totalSeconds > 0) {
+                display.classList.add('warning');
+            } else {
+                display.classList.remove('warning');
+            }
+        }
+
+        function startTimer() {
+            if (timerInterval) return; // Tránh bấm nhiều lần tạo nhiều interval
+
+            timerInterval = setInterval(() => {
+                if (totalSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    timerInterval = null;
+                    display.classList.remove('warning');
+                    modal.style.display = 'flex'; // Hiển thị Modal Alert
+                } else {
+                    totalSeconds--;
+                    updateDisplay();
+                }
+            }, 1000);
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            totalSeconds = 10 * 60;
+            display.classList.remove('warning');
+            updateDisplay();
+        }
+
+        function closeModal() {
+            modal.style.display = 'none';
+        }
+
+        startBtn.addEventListener('click', startTimer);
+        resetBtn.addEventListener('click', resetTimer);
+
+        updateDisplay();
+    </script>
+</body>
+</html>
